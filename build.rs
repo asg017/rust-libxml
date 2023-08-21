@@ -43,7 +43,7 @@ fn main() {
     if cfg!(target_family = "windows") {
       println!(
         "cargo:rustc-link-search=native={}",
-        dst.join("build").join("Debug").display()
+        dst.join("lib").display()
       );
       println!("cargo:rustc-link-lib=static=xml2sd");
     } else {

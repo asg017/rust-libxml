@@ -17,6 +17,9 @@ exclude = [
 [lib]
 name = "libxml"
 
+[features]
+build-source = []
+
 [dependencies]
 libc = "0.2"
 
@@ -32,6 +35,11 @@ pkg-config = "0.3.2"
 [dev-dependencies]
 rayon = "1.0.0"
 criterion = "0.5.1"
+
+[build-dependencies]
+cmake = "0.1"
+tar = "0.4.40"
+flate2 = "1.0.27"
 
 [[bench]]
 name = "parsing_benchmarks"

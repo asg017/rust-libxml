@@ -1,5 +1,46 @@
+use std::{env, fs::File, process::Command};
+
+use cmake::Config;
+use flate2::read::GzDecoder;
+use std::path::Path;
+use tar::Archive;
+
 fn main() {
-  if let Ok(ref s) = std::env::var("LIBXML2") {
+  if std::env::var("CARGO_FEATURE_BUILD_SOURCE").is_ok() {
+    let out_dir = env::var("OUT_DIR").unwrap();
+    let out_dir = Path::new(out_dir.as_str());
+
+    let download_path = out_dir.join("libxml2-v2.11.5.tar.gz");
+
+    // Run the curl command to download the file
+    let status = Command::new("curl")
+      .args([
+        "-L",
+        "-o",
+        download_path.to_str().unwrap(),
+        "https://gitlab.gnome.org/GNOME/libxml2/-/archive/v2.11.5/libxml2-v2.11.5.tar.gz",
+      ])
+      .status()
+      .expect("Failed to execute curl command");
+    if !status.success() {
+      panic!("")
+    }
+    let tar_gz = File::open(download_path).unwrap();
+    let tar = GzDecoder::new(tar_gz);
+    let mut archive = Archive::new(tar);
+    archive.unpack(".").unwrap();
+
+    let dst = Config::new("/Users/alex/tmp/xml/libxml2/tmp/libxml2-v2.11.5")
+      .define("LIBXML2_WITH_ZLIB", "OFF")
+      .define("LIBXML2_WITH_LZMA", "OFF")
+      .define("LIBXML2_WITH_HTTP", "OFF")
+      .define("LIBXML2_WITH_PYTHON", "OFF")
+      .define("BUILD_SHARED_LIBS", "OFF")
+      .build();
+
+    println!("cargo:rustc-link-search=native={}/build", dst.display());
+    println!("cargo:rustc-link-lib=static=xml2");
+  } else if let Ok(ref s) = std::env::var("LIBXML2") {
     // println!("{:?}", std::env::vars());
     // panic!("set libxml2.");
     let p = std::path::Path::new(s);

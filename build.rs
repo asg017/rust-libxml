@@ -40,7 +40,10 @@ fn main() {
       .define("BUILD_SHARED_LIBS", "OFF")
       .build();
 
-    println!("cargo:rustc-link-search=native={}/build", dst.display());
+    println!(
+      "cargo:rustc-link-search=native={}",
+      dst.join("build").display()
+    );
     println!("cargo:rustc-link-lib=static=xml2");
   } else if let Ok(ref s) = std::env::var("LIBXML2") {
     // println!("{:?}", std::env::vars());

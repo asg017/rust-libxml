@@ -40,11 +40,19 @@ fn main() {
       .define("BUILD_SHARED_LIBS", "OFF")
       .build();
 
-    println!(
-      "cargo:rustc-link-search=native={}",
-      dst.join("build").display()
-    );
-    println!("cargo:rustc-link-lib=static=xml2");
+    if cfg!(target_family = "windows") {
+      println!(
+        "cargo:rustc-link-search=native={}",
+        dst.join("build").join("Debug").display()
+      );
+      println!("cargo:rustc-link-lib=static=xml2sd");
+    } else {
+      println!(
+        "cargo:rustc-link-search=native={}",
+        dst.join("build").display()
+      );
+      println!("cargo:rustc-link-lib=static=xml2");
+    }
   } else if let Ok(ref s) = std::env::var("LIBXML2") {
     // println!("{:?}", std::env::vars());
     // panic!("set libxml2.");

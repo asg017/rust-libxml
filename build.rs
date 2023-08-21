@@ -11,6 +11,7 @@ fn main() {
     let out_dir = Path::new(out_dir.as_str());
 
     let download_path = out_dir.join("libxml2-v2.11.5.tar.gz");
+    let libxml_target_dir = out_dir.join("libxml2-v2.11.5");
 
     // Run the curl command to download the file
     let status = Command::new("curl")
@@ -28,9 +29,9 @@ fn main() {
     let tar_gz = File::open(download_path).unwrap();
     let tar = GzDecoder::new(tar_gz);
     let mut archive = Archive::new(tar);
-    archive.unpack(".").unwrap();
+    archive.unpack(out_dir).unwrap();
 
-    let dst = Config::new("/Users/alex/tmp/xml/libxml2/tmp/libxml2-v2.11.5")
+    let dst = Config::new(libxml_target_dir.to_str().unwrap())
       .define("LIBXML2_WITH_ZLIB", "OFF")
       .define("LIBXML2_WITH_LZMA", "OFF")
       .define("LIBXML2_WITH_HTTP", "OFF")

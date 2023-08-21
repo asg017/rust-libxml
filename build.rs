@@ -41,18 +41,19 @@ fn main() {
       .define("LIBXML2_WITH_HTTP", "OFF")
       .define("LIBXML2_WITH_PYTHON", "OFF")
       .define("LIBXML2_WITH_ICONV", "OFF")
-      .define("BUILD_SHARED_LIBS", "OFF");
+      .define("BUILD_SHARED_LIBS", "OFF")
+      .define("CMAKE_BUILD_TYPE", "Release");
     if let Ok(cflags) = env::var("LIBXML2_CFLAGS") {
       config.cflag(cflags);
     }
     let dst = config.build();
 
     if cfg!(target_family = "windows") {
+      println!("cargo:rustc-link-lib=static=libxml2sd");
       println!(
         "cargo:rustc-link-search=native={}",
         dst.join("lib").display()
       );
-      println!("cargo:rustc-link-lib=static=xml2sd");
     } else {
       println!(
         "cargo:rustc-link-search=native={}",

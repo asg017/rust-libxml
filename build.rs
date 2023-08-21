@@ -6,6 +6,9 @@ use std::path::Path;
 use tar::Archive;
 
 fn main() {
+  println!("cargo:rerun-if-env-changed=CARGO_FEATURE_BUILD_SOURCE");
+  println!("cargo:rerun-if-env-changed=LIBXML2_CFLAGS");
+
   if std::env::var("CARGO_FEATURE_BUILD_SOURCE").is_ok() {
     let out_dir = env::var("OUT_DIR").unwrap();
     let out_dir = Path::new(out_dir.as_str());

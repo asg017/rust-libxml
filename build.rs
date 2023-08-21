@@ -31,14 +31,18 @@ fn main() {
     let mut archive = Archive::new(tar);
     archive.unpack(out_dir).unwrap();
 
-    let dst = Config::new(libxml_target_dir.to_str().unwrap())
+    let mut config = Config::new(libxml_target_dir.to_str().unwrap());
+    config
       .define("LIBXML2_WITH_ZLIB", "OFF")
       .define("LIBXML2_WITH_LZMA", "OFF")
       .define("LIBXML2_WITH_HTTP", "OFF")
       .define("LIBXML2_WITH_PYTHON", "OFF")
       .define("LIBXML2_WITH_ICONV", "OFF")
-      .define("BUILD_SHARED_LIBS", "OFF")
-      .build();
+      .define("BUILD_SHARED_LIBS", "OFF");
+    if let Ok(cflags) = env::var("LIBXML2_CFLAGS") {
+      config.cflag(cflags);
+    }
+    let dst = config.build();
 
     if cfg!(target_family = "windows") {
       println!(

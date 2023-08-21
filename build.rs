@@ -36,6 +36,7 @@ fn main() {
       .define("LIBXML2_WITH_LZMA", "OFF")
       .define("LIBXML2_WITH_HTTP", "OFF")
       .define("LIBXML2_WITH_PYTHON", "OFF")
+      .define("LIBXML2_WITH_ICONV", "OFF")
       .define("BUILD_SHARED_LIBS", "OFF")
       .build();
 
